@@ -131,6 +131,21 @@ if page == "Home":
             st.success(f"🎉 Correto! {growth_by_sport} foi o esporte que teve o maior crescimento em ganhos ao longo dos anos.")
         else:
             st.error(f"❌ Errado! {growth_by_sport} foi o esporte que teve o maior crescimento em ganhos ao longo dos anos.")
+    # Pergunta 5: Qual foi o atleta mais bem pago em um determinado ano (ajustado pela inflação)?
+    selected_year_quiz = st.selectbox("Escolha o ano para verificar o atleta mais bem pago (ajustado pela inflação)", sorted(df_atletas['Ano'].unique()), key='quiz_year_select_5')
+    top_atleta_ano_ajustado = df_atletas[df_atletas['Ano'] == selected_year_quiz].sort_values(by='Salario Ajustado', ascending=False).iloc[0]['Name']
+    atletas_opcoes_ano_ajustado = list(df_atletas[df_atletas['Ano'] == selected_year_quiz]['Name'].unique())
+    atletas_opcoes_ano_ajustado.remove(top_atleta_ano_ajustado)
+    atletas_opcoes_ano_ajustado = [top_atleta_ano_ajustado] + atletas_opcoes_ano_ajustado[:4]
+    atletas_opcoes_ano_ajustado = sorted(atletas_opcoes_ano_ajustado)
+    
+    resposta_usuario5 = st.radio(f"Quem foi o atleta mais bem pago em {selected_year_quiz} (ajustado pela inflação)?", atletas_opcoes_ano_ajustado, key='quiz5')
+
+if st.button("Verificar Resposta 5"):
+    if resposta_usuario5 == top_atleta_ano_ajustado:
+        st.success(f"🎉 Correto! {top_atleta_ano_ajustado} foi o atleta mais bem pago em {selected_year_quiz} (ajustado pela inflação).")
+    else:
+        st.error(f"❌ Errado! {top_atleta_ano_ajustado} foi o atleta mais bem pago em {selected_year_quiz} (ajustado pela inflação).")
 
 elif page == "Gráficos":
     # Filtrar por ano
