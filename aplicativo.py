@@ -130,13 +130,6 @@ if page == "Home":
         if resposta_usuario4 == growth_by_sport:
             st.success(f"🎉 Correto! {growth_by_sport} foi o esporte que teve o maior crescimento em ganhos ao longo dos anos.")
         else:
-   
-
-if st.button("Verificar Resposta 5"):
-    if resposta_usuario5 == top_atleta_ano_ajustado:
-        st.success(f"🎉 Correto! {top_atleta_ano_ajustado} foi o atleta mais bem pago em {selected_year_quiz} (ajustado pela inflação).")
-    else:
-        st.error(f"❌ Errado! {top_atleta_ano_ajustado} foi o atleta mais bem pago em {selected_year_quiz} (ajustado pela inflação).")
 
 elif page == "Gráficos":
     # Filtrar por ano
