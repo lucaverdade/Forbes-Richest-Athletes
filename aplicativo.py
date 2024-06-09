@@ -13,7 +13,7 @@ st.title("Análise dos Salários dos Atletas e o Poder de Compra do Dólar")
 # Carregar os dados dos atletas
 df_atletas = pd.read_csv('Atletas mais bem pagos.csv')
 # Carregar os dados do poder de compra do dólar
-dollar_df = pd.read_csv('dollar_inflation.csv')
+dollar_df = pd.read_csv('inflation_data.csv')
 
 # Ajustar os nomes das colunas
 df_atletas = df_atletas.rename(columns={'Year': 'Ano', 'earnings ($ million)': 'Ganhos'})
@@ -29,18 +29,25 @@ df_atletas['Sport'] = df_atletas['Sport'].replace({
     'Auto Racing': 'NASCAR',
     'Auto Racing (Nascar)': 'NASCAR',
     'auto racing': 'NASCAR',
+    'boxing': 'Boxing',
+    'golf': 'Golf',
 })
 
 # Ajustar os salários dos atletas com base no valor do dólar
 df_atletas['Ano'] = df_atletas['Ano'].astype(int)
-dollar_df['Year'] = dollar_df['Year'].astype(int)
+dollar_df['year'] = dollar_df['year'].astype(int)
 
-# Mesclar os datasets
-merged_df = pd.merge(df_atletas, dollar_df, left_on='Ano', right_on='Year')
+# Criar um dicionário para mapear o valor acumulado para cada ano
+inflation_dict = dollar_df.set_index('year')['amount'].to_dict()
 
-# Calcular o salário ajustado considerando a inflação
-current_dollar_value = dollar_df['Dollar Value'].iloc[-1]
-merged_df['Salario Ajustado'] = merged_df['Ganhos'] * (current_dollar_value / merged_df['Dollar Value'])
+# Obter o valor acumulado atual (último valor da coluna 'amount')
+current_inflation_value = inflation_dict[max(inflation_dict.keys())]
+
+# Adicionar a inflação acumulada correspondente ao ano de cada registro de atleta
+df_atletas['Inflation Amount'] = df_atletas['Ano'].apply(lambda x: inflation_dict.get(x, current_inflation_value))
+
+# Calcular o salário ajustado considerando a inflação acumulada
+df_atletas['Salario Ajustado'] = df_atletas['Ganhos'] * (current_inflation_value / df_atletas['Inflation Amount'])
 
 # Carregar os dados do mapa
 with open('world-countries.json', 'r', encoding='latin-1') as f:
@@ -59,14 +66,14 @@ if page == "Home":
         """
     )
 
-    st.image("atletasRICOS.jpg", use_column_width=True)
+    st.image("AtletasRicosAnalise.jpg", use_column_width=True)
 
     st.title("🏆 Quiz: Descubra os Fatos Sobre os Ganhos dos Atletas! 🏆")
     st.write("Tente adivinhar as respostas para os seguintes fatos sobre os ganhos dos atletas!")
 
     # Pergunta 1: Qual foi o esporte que mais rendeu dinheiro na história (ajustado)?
-    top_esporte_ajustado = merged_df.groupby('Sport')['Salario Ajustado'].sum().idxmax()
-    esportes_opcoes_ajustado = list(merged_df['Sport'].unique())
+    top_esporte_ajustado = df_atletas.groupby('Sport')['Salario Ajustado'].sum().idxmax()
+    esportes_opcoes_ajustado = list(df_atletas['Sport'].unique())
     esportes_opcoes_ajustado.remove(top_esporte_ajustado)
     esportes_opcoes_ajustado = [top_esporte_ajustado] + esportes_opcoes_ajustado[:4]
     esportes_opcoes_ajustado = sorted(esportes_opcoes_ajustado)
@@ -80,8 +87,8 @@ if page == "Home":
             st.error(f"❌ Errado! {top_esporte_ajustado} foi o esporte que mais rendeu dinheiro na história (ajustado).")
 
     # Pergunta 2: Qual a nacionalidade que mais fez dinheiro (ajustado)?
-    top_nacionalidade_ajustado = merged_df.groupby('Nationality')['Salario Ajustado'].sum().idxmax()
-    nacionalidades_opcoes_ajustado = list(merged_df['Nationality'].unique())
+    top_nacionalidade_ajustado = df_atletas.groupby('Nationality')['Salario Ajustado'].sum().idxmax()
+    nacionalidades_opcoes_ajustado = list(df_atletas['Nationality'].unique())
     nacionalidades_opcoes_ajustado.remove(top_nacionalidade_ajustado)
     nacionalidades_opcoes_ajustado = [top_nacionalidade_ajustado] + nacionalidades_opcoes_ajustado[:4]
     nacionalidades_opcoes_ajustado = sorted(nacionalidades_opcoes_ajustado)
@@ -96,8 +103,8 @@ if page == "Home":
 
     # Pergunta 3: Qual atleta foi o mais bem pago em um determinado ano?
     selected_year = st.selectbox("Escolha o ano", sorted(df_atletas['Ano'].unique()), key='quiz_year_select')
-    top_atleta_ano = merged_df[merged_df['Ano'] == selected_year].sort_values(by='Salario Ajustado', ascending=False).iloc[0]['Name']
-    atletas_opcoes_ano = list(merged_df[merged_df['Ano'] == selected_year]['Name'].unique())
+    top_atleta_ano = df_atletas[df_atletas['Ano'] == selected_year].sort_values(by='Salario Ajustado', ascending=False).iloc[0]['Name']
+    atletas_opcoes_ano = list(df_atletas[df_atletas['Ano'] == selected_year]['Name'].unique())
     atletas_opcoes_ano.remove(top_atleta_ano)
     atletas_opcoes_ano = [top_atleta_ano] + atletas_opcoes_ano[:4]
     atletas_opcoes_ano = sorted(atletas_opcoes_ano)
@@ -111,8 +118,8 @@ if page == "Home":
             st.error(f"❌ Errado! {top_atleta_ano} foi o atleta mais bem pago em {selected_year}.")
 
     # Pergunta 4: Qual esporte teve o maior crescimento em ganhos ao longo dos anos?
-    growth_by_sport = merged_df.groupby('Sport')['Ganhos'].sum().pct_change().fillna(0).idxmax()
-    esportes_opcoes_growth = list(merged_df['Sport'].unique())
+    growth_by_sport = df_atletas.groupby('Sport')['Salario Ajustado'].sum().pct_change().fillna(0).idxmax()
+    esportes_opcoes_growth = list(df_atletas['Sport'].unique())
     esportes_opcoes_growth.remove(growth_by_sport)
     esportes_opcoes_growth = [growth_by_sport] + esportes_opcoes_growth[:4]
     esportes_opcoes_growth = sorted(esportes_opcoes_growth)
@@ -143,7 +150,7 @@ elif page == "Gráficos":
             total_earnings_by_year = filtered_df.groupby("Ano")["Ganhos"].sum().reset_index()
             fig1 = px.line(total_earnings_by_year, x="Ano", y="Ganhos", title="Ganhos Totais por Ano",
                            labels={"Ano": "Ano", "Ganhos": "Ganhos ($ milhões)"},
-                           template="plotly_dark", color_discrete_sequence=["#FF6347"])
+                                                      template="plotly_dark", color_discrete_sequence=["#FF6347"])
             st.write("**Ganhos Totais por Ano:** Este gráfico mostra a tendência dos ganhos totais de atletas ao longo dos anos. (Selecione mais de um ano para ver a tendência)")
             st.plotly_chart(fig1, use_container_width=True)
 
@@ -199,37 +206,40 @@ elif page == "Análise Ajustada":
     # Selecionar os atletas
     atletas_selecionados = st.sidebar.multiselect(
         "Selecione os Atletas",
-        options=merged_df['Name'].unique(),
-        default=list(merged_df.groupby('Name')['Salario Ajustado'].sum().nlargest(20).index),
+        options=df_atletas['Name'].unique(),
+        default=list(df_atletas.groupby('Name')['Salario Ajustado'].sum().nlargest(20).index),
         key='atletas_select'
     )
 
     # Selecionar o intervalo de anos
     anos = st.sidebar.slider(
         'Selecione o Intervalo de Anos',
-        min_value=int(merged_df['Ano'].min()),
-        max_value=int(merged_df['Ano'].max()),
-        value=(int(merged_df['Ano'].min()), int(merged_df['Ano'].max())),
+        min_value=int(df_atletas['Ano'].min()),
+        max_value=int(df_atletas['Ano'].max()),
+        value=(int(df_atletas['Ano'].min()), int(df_atletas['Ano'].max())),
         key='anos_select'
     )
 
     # Filtrar os dados
-    df_filtrado = merged_df[(merged_df['Name'].isin(atletas_selecionados)) & (merged_df['Ano'] >= anos[0]) & (merged_df['Ano'] <= anos[1])]
+    df_filtrado = df_atletas[(df_atletas['Name'].isin(atletas_selecionados)) & (df_atletas['Ano'] >= anos[0]) & (df_atletas['Ano'] <= anos[1])]
 
     st.title("📈 Análise Ajustada dos Ganhos dos Atletas 📈")
 
-    # Gráfico 1: Salário Ajustado dos Atletas ao Longo dos Anos
-    fig1 = px.line(df_filtrado, x='Ano', y='Salario Ajustado', color='Name', title='Salário Ajustado dos Atletas ao Longo dos Anos',
-                   labels={"Ano": "Ano", "Salario Ajustado": "Salário Ajustado ($ milhões)"},
-                   template="plotly_dark", color_discrete_sequence=px.colors.qualitative.Pastel)
-    st.plotly_chart(fig1, use_container_width=True)
+   
 
     # Gráfico 2: Salário Ajustado dos Top 10 Atletas
     top_10_atletas = df_filtrado.groupby('Name')['Salario Ajustado'].sum().nlargest(10).reset_index()
-    fig2 = px.bar(top_10_atletas, x='Name', y='Salario Ajustado', title='Salário Ajustado dos Top 10 Atletas',
+    fig2 = px.bar(top_10_atletas, x='Name', y='Salario Ajustado', title='Ganhos totais dos atletas corrigidos para o ano Selecionado',
                   labels={"Name": "Atleta", "Salario Ajustado": "Salário Ajustado ($ milhões)"},
                   template="plotly_dark", color_discrete_sequence=px.colors.qualitative.Pastel)
     st.plotly_chart(fig2, use_container_width=True)
+
+    # Gráfico 2: Ganhos por Ano
+    fig2 = px.bar(df_atletas, x='Ano', y='Salario Ajustado', color='Name', title='Ganhos por Ano',
+                labels={"Ano": "Ano", "Salario Ajustado": "Salário Ajustado ($ milhões)", "Name": "Atleta"},
+                template="plotly_dark", color_discrete_sequence=px.colors.qualitative.Pastel)
+    st.plotly_chart(fig2, use_container_width=True)
+ 
 
 elif page == "Explicações e Análises":
     st.title("📚 Explicações e Análises 📚")
@@ -248,7 +258,7 @@ elif page == "Explicações e Análises":
         Para ajustar os ganhos dos atletas ao longo dos anos, consideramos o poder de compra do dólar. Calculamos o salário ajustado multiplicando os ganhos pelo valor atual do dólar dividido pelo valor do dólar no ano correspondente.
 
         ```python
-        merged_df['Salario Ajustado'] = merged_df['Ganhos'] * (current_dollar_value / merged_df['Dollar Value'])
+        df_atletas['Salario Ajustado'] = df_atletas['Ganhos'] * (current_inflation_value / df_atletas['Inflation Amount'])
         ```
 
         ## Análises Realizadas
@@ -270,5 +280,15 @@ elif page == "Explicações e Análises":
         ### Gráficos e Mapas
         Utilizamos uma combinação de gráficos de linha, barras e mapas para visualizar os dados. Os gráficos de linha mostram as tendências ao longo do tempo, enquanto os gráficos de barras comparam diferentes categorias, como esportes e nacionalidades. Os mapas ajudam a visualizar a distribuição geográfica dos ganhos.
 
-        
+        ## Conclusão
+
+        Este dashboard oferece uma visão abrangente dos ganhos dos atletas ao longo dos anos, ajustando os valores para refletir o poder de compra atual do dólar. Isso permite uma comparação mais justa e precisa dos ganhos dos atletas em diferentes épocas.
+
+        ## Próximos Passos
+
+        - **Melhorar a Precisão**: Utilizar dados mais detalhados de inflação para ajustes mais precisos.
+        - **Análises Adicionais**: Incluir mais perguntas no quiz e explorar outros aspectos dos dados, como a relação entre ganhos e popularidade dos esportes ao longo do tempo.
         """)
+
+   
+
