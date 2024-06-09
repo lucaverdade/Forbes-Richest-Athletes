@@ -130,6 +130,7 @@ if page == "Home":
         if resposta_usuario4 == growth_by_sport:
             st.success(f"🎉 Correto! {growth_by_sport} foi o esporte que teve o maior crescimento em ganhos ao longo dos anos.")
         else:
+            st.error(f"❌ Errado! {top_atleta_ano} foi o atleta mais bem pago em {selected_year}.")
 
 elif page == "Gráficos":
     # Filtrar por ano
