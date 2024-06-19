@@ -35,6 +35,7 @@ df_atletas['Sport'] = df_atletas['Sport'].replace({
     'F1 Motorsports': 'Auto Racing',
     'F1 racing': 'Auto Racing',
     'tennis': 'Tennis',
+    'ice hockey': 'Ice Hockey',
 })
 
 # Ajustar os salários dos atletas com base no valor do dólar
