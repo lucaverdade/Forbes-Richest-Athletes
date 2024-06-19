@@ -25,12 +25,16 @@ df_atletas['Sport'] = df_atletas['Sport'].replace({
     'NBA': 'Basketball',
     'soccer': 'Soccer',
     'basketball': 'Basketball',
-    'Auto racing': 'NASCAR',
-    'Auto Racing': 'NASCAR',
-    'Auto Racing (Nascar)': 'NASCAR',
-    'auto racing': 'NASCAR',
+    'Auto racing': 'Auto Racing',
+    'Auto Racing': 'Auto Racing',
+    'Auto Racing (Nascar)': 'Auto Racing',
+    'auto racing': 'Auto Racing',
+    'F1 Motorsports': 'Auto Racing',
+    'F1 racing': 'Auto Racing',
     'boxing': 'Boxing',
     'golf': 'Golf',
+    'ice hockey': 'Ice Hockey',
+    'tennis': 'Tennis',
 })
 
 # Ajustar os salários dos atletas com base no valor do dólar
@@ -71,20 +75,6 @@ if page == "Home":
     st.title("🏆 Quiz: Descubra os Fatos Sobre os Ganhos dos Atletas! 🏆")
     st.write("Tente adivinhar as respostas para os seguintes fatos sobre os ganhos dos atletas!")
 
-    # Pergunta 1: Qual foi o esporte que mais rendeu dinheiro na história (ajustado)?
-    top_esporte_ajustado = df_atletas.groupby('Sport')['Salario Ajustado'].sum().idxmax()
-    esportes_opcoes_ajustado = list(df_atletas['Sport'].unique())
-    esportes_opcoes_ajustado.remove(top_esporte_ajustado)
-    esportes_opcoes_ajustado = [top_esporte_ajustado] + esportes_opcoes_ajustado[:4]
-    esportes_opcoes_ajustado = sorted(esportes_opcoes_ajustado)
-
-    resposta_usuario1 = st.radio("Qual foi o esporte que mais rendeu dinheiro na história (ajustado)?", esportes_opcoes_ajustado, key='quiz1')
-
-    if st.button("Verificar Resposta 1"):
-        if resposta_usuario1 == top_esporte_ajustado:
-            st.success(f"🎉 Correto! {top_esporte_ajustado} foi o esporte que mais rendeu dinheiro na história (ajustado).")
-        else:
-            st.error(f"❌ Errado! {top_esporte_ajustado} foi o esporte que mais rendeu dinheiro na história (ajustado).")
 
     # Pergunta 2: Qual a nacionalidade que mais fez dinheiro (ajustado)?
     top_nacionalidade_ajustado = df_atletas.groupby('Nationality')['Salario Ajustado'].sum().idxmax()
