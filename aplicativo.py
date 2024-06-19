@@ -153,4 +153,4 @@ elif page == "Gráficos":
             # Gráfico 1: Ganhos totais por ano
             total_earnings_by_year = filtered_df.groupby("Ano")["Ganhos"].sum().reset_index()
             fig1 = px.line(total_earnings_by_year, x="Ano", y="Ganhos", title="Ganhos Totais por Ano",
-                           labels={"Ano": "Ano", "Gan
+                          
