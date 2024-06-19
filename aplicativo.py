@@ -224,11 +224,35 @@ elif page == "Análise Ajustada":
                   template="plotly_dark", color_discrete_sequence=px.colors.qualitative.Pastel)
     st.plotly_chart(fig2, use_container_width=True)
 
-    # Gráfico 2: Ganhos por Ano
-    fig2 = px.bar(df_atletas, x='Ano', y='Salario Ajustado', color='Name', title='Ganhos por Ano',
-                labels={"Ano": "Ano", "Salario Ajustado": "Salário Ajustado ($ milhões)", "Name": "Atleta"},
-                template="plotly_dark", color_discrete_sequence=px.colors.qualitative.Pastel)
-    st.plotly_chart(fig2, use_container_width=True)
+   # Selecionar os atletas para comparar
+atletas_selecionados = st.multiselect('Selecione os Atletas', df_atletas['Name'].unique())
+
+# Filtrar os dados com base nos atletas selecionados
+if atletas_selecionados:
+    df_filtrado = df_atletas[df_atletas['Name'].isin(atletas_selecionados)]
+else:
+    df_filtrado = df_atletas
+
+# Gráfico 2: Ganhos por Ano ajustados para os atletas selecionados
+fig2 = px.bar(df_filtrado, x='Ano', y='Salario Ajustado', color='Name', title='Ganhos por Ano',
+              labels={"Ano": "Ano", "Salario Ajustado": "Salário Ajustado ($ milhões)", "Name": "Atleta"},
+              template="plotly_dark", color_discrete_sequence=px.colors.qualitative.Pastel)
+st.plotly_chart(fig2, use_container_width=True)
+# Selecionar os atletas para comparar
+atletas_selecionados = st.multiselect('Selecione os Atletas', df_atletas['Name'].unique())
+
+# Filtrar os dados com base nos atletas selecionados
+if atletas_selecionados:
+    df_filtrado = df_atletas[df_atletas['Name'].isin(atletas_selecionados)]
+else:
+    df_filtrado = df_atletas
+
+# Gráfico 2: Ganhos por Ano ajustados para os atletas selecionados
+fig2 = px.bar(df_filtrado, x='Ano', y='Salario Ajustado', color='Name', title='Ganhos por Ano',
+              labels={"Ano": "Ano", "Salario Ajustado": "Salário Ajustado ($ milhões)", "Name": "Atleta"},
+              template="plotly_dark", color_discrete_sequence=px.colors.qualitative.Pastel)
+st.plotly_chart(fig2, use_container_width=True)
+
  
 
 elif page == "Explicações e Análises":
