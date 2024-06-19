@@ -20,17 +20,23 @@ df_atletas = df_atletas.rename(columns={'Year': 'Ano', 'earnings ($ million)': '
 
 # Combinar os esportes
 df_atletas['Sport'] = df_atletas['Sport'].replace({
+    df_atletas['Sport'] = df_atletas['Sport'].replace({
     'NFL': 'American Football',
     'America football': 'American Football',
     'NBA': 'Basketball',
     'soccer': 'Soccer',
     'basketball': 'Basketball',
-    'Auto racing': 'NASCAR',
-    'Auto Racing': 'NASCAR',
-    'Auto Racing (Nascar)': 'NASCAR',
-    'auto racing': 'NASCAR',
+    'Auto racing': 'Auto Racing',
+    'Auto Racing': 'Auto Racing',
+    'Auto Racing (Nascar)': 'Auto Racing',
+    'auto racing': 'Auto Racing',
+    'F1 Motorsports': 'Auto Racing',
+    'F1 racing': 'Auto Racing',
     'boxing': 'Boxing',
     'golf': 'Golf',
+    'tennis': 'Tennis',
+})
+
 })
 
 # Ajustar os salários dos atletas com base no valor do dólar
