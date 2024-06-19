@@ -20,7 +20,6 @@ df_atletas = df_atletas.rename(columns={'Year': 'Ano', 'earnings ($ million)': '
 
 # Combinar os esportes
 df_atletas['Sport'] = df_atletas['Sport'].replace({
-    df_atletas['Sport'] = df_atletas['Sport'].replace({
     'NFL': 'American Football',
     'America football': 'American Football',
     'NBA': 'Basketball',
