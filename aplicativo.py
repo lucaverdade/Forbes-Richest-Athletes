@@ -34,6 +34,7 @@ df_atletas['Sport'] = df_atletas['Sport'].replace({
     'boxing': 'Boxing',
     'golf': 'Golf',
     'ice hockey': 'Ice Hockey',
+    'tennis': 'Tennis',
 })
 
 
