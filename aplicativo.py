@@ -231,6 +231,7 @@ elif page == "Análise Ajustada":
    # st.plotly_chart(fig2, use_container_width=True)
  
 
+
 elif page == "Explicações e Análises":
     st.title("📚 Explicações e Análises 📚")
     st.markdown("""
@@ -239,13 +240,13 @@ elif page == "Explicações e Análises":
         ### Atletas Mais Bem Pagos
         Os dados dos atletas mais bem pagos foram obtidos a partir de um conjunto de dados que lista os ganhos anuais de vários atletas ao longo dos anos. Este conjunto de dados inclui informações como o nome do atleta, nacionalidade, esporte, ano e ganhos em milhões de dólares.
 
-        ### Poder de Compra do Dólar
-        O segundo conjunto de dados utilizado é o valor do poder de compra do dólar ao longo dos anos. Este conjunto de dados inclui informações sobre o valor do dólar, poder de compra e taxa de inflação para cada ano.
+        ### Taxas de Inflação
+        O segundo conjunto de dados utilizado inclui informações sobre as taxas de inflação ao longo dos anos. Esses dados são cruciais para ajustar os ganhos dos atletas para refletir o valor atual do dólar.
 
         ## Processamento dos Dados
 
         ### Ajuste dos Ganhos dos Atletas
-        Para proporcionar uma comparação justa dos ganhos dos atletas ao longo dos anos, consideramos o poder de compra do dólar. Calculamos o salário ajustado multiplicando os ganhos pelo valor atual do dólar dividido pelo valor do dólar no ano correspondente. 
+        Para proporcionar uma comparação justa dos ganhos dos atletas ao longo dos anos, ajustamos os valores dos ganhos com base nas taxas de inflação. Calculamos o salário ajustado multiplicando os ganhos pelo valor atual do dólar dividido pelo valor do dólar no ano correspondente.
         Isso nos permite entender melhor como os ganhos dos atletas se comparam ao longo do tempo, eliminando o impacto da inflação.
 
         ```python
