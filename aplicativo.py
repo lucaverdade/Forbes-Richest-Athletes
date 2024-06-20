@@ -245,11 +245,21 @@ elif page == "Explicações e Análises":
         ## Processamento dos Dados
 
         ### Ajuste dos Ganhos dos Atletas
-        Para ajustar os ganhos dos atletas ao longo dos anos, consideramos o poder de compra do dólar. Calculamos o salário ajustado multiplicando os ganhos pelo valor atual do dólar dividido pelo valor do dólar no ano correspondente.
+        Para proporcionar uma comparação justa dos ganhos dos atletas ao longo dos anos, consideramos o poder de compra do dólar. Calculamos o salário ajustado multiplicando os ganhos pelo valor atual do dólar dividido pelo valor do dólar no ano correspondente. 
+        Isso nos permite entender melhor como os ganhos dos atletas se comparam ao longo do tempo, eliminando o impacto da inflação.
 
         ```python
         df_atletas['Salario Ajustado'] = df_atletas['Ganhos'] * (current_inflation_value / df_atletas['Inflation Amount'])
         ```
+
+        ### Padronização dos Dados
+        Durante a análise, encontramos inconsistências nos nomes dos esportes ao longo dos anos, causadas por mudanças na nomenclatura feita pela Forbes. Para padronizar, aplicamos correções e unificamos os nomes dos esportes. Por exemplo, "Auto racing", "Auto Racing (Nascar)" e "F1 racing" foram todos padronizados como "Auto Racing". 
+
+        ## Desafios Enfrentados
+        Trabalhar com dados históricos pode ser desafiador, especialmente quando as fontes mudam a nomenclatura ao longo do tempo. Alguns dos problemas encontrados incluem:
+        - **Inconsistência nos Nomes dos Esportes**: Como mencionado, tivemos que padronizar os nomes dos esportes para garantir a consistência dos dados.
+        - **Dados Faltantes ou Incompletos**: Em alguns casos, informações importantes estavam ausentes, exigindo estimativas ou exclusão de alguns registros.
+        - **Ajustes para Inflação**: O cálculo do valor ajustado requer dados precisos de inflação, que podem variar dependendo da fonte.
 
         ## Análises Realizadas
 
@@ -257,7 +267,7 @@ elif page == "Explicações e Análises":
         Esta análise mostra a tendência dos ganhos totais de atletas ao longo dos anos. Isso nos ajuda a entender como a popularidade e o pagamento de atletas mudaram com o tempo.
 
         ### Ganhos Totais por Esporte
-        Aqui, visualizamos quais esportes geraram mais receita ao longo dos anos, tanto em valores não ajustados quanto ajustados pela inflação. Isso nos ajuda a identificar quais esportes são mais lucrativos.
+        Visualizamos quais esportes geraram mais receita ao longo dos anos, tanto em valores não ajustados quanto ajustados pela inflação. Isso nos ajuda a identificar quais esportes são mais lucrativos.
 
         ### Distribuição de Ganhos por Nacionalidade
         Esta análise nos permite ver quais nacionalidades dominam em termos de ganhos totais dos atletas. Isso pode indicar quais países investem mais em esportes específicos.
@@ -279,6 +289,7 @@ elif page == "Explicações e Análises":
         - **Melhorar a Precisão**: Utilizar dados mais detalhados de inflação para ajustes mais precisos.
         - **Análises Adicionais**: Incluir mais perguntas no quiz e explorar outros aspectos dos dados, como a relação entre ganhos e popularidade dos esportes ao longo do tempo.
         """)
+
 
    
 
